@@ -49,9 +49,7 @@ runs:
     - name: "Install Python Venv"
       run: |
         python -m venv venv
-        ./venv/bin/pip install json
         ./venv/bin/pip install requests
-        ./venv/bin/pip install sys
       shell: bash
        
     - name: "Run tagexpire"
