@@ -36,7 +36,9 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+      with: https://github.com/eumel8/expire-action
+      ref: dev
     - name: "Setup Python ${{ inputs.python_version }}"
       uses: actions/setup-python@v4
       with:
