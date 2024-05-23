@@ -30,7 +30,7 @@ if repo_type == 'user':
         # If the tag is older than the threshold, delete it
         if created_at < threshold_date:
             print(f'Deleted tag {tag["id"]}')
-            response = requests.delete(f'https://api.github.com/user/packages/container/'+image_name+'/versions/{tag["id"]}', auth=auth)
+            response = requests.delete(f'https://api.github.com/user/packages/container/'+image_name+'/versions/'+{tag["id"]}+', auth=auth)
             response.raise_for_status()  # Raise an exception if the request failed
             print(f'Deleted tag {tag["name"]}')
 
@@ -45,6 +45,6 @@ elif repo_type == 'org':
 
         # If the tag is older than the threshold, delete it
         if created_at < threshold_date:
-            response = requests.delete(f'https://api.github.com/orgs/'+orgname+'/packages/container/{image_name}/versions/{tag["id"]}', auth=auth)
+            response = requests.delete(f'https://api.github.com/orgs/'+orgname+'/packages/container/{image_name}/versions/'+{tag["id"]}+', auth=auth)
             response.raise_for_status()  # Raise an exception if the request failed
             print(f'Deleted tag {tag["name"]}')
