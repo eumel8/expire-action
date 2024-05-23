@@ -38,7 +38,7 @@ runs:
   steps:
     - uses: actions/checkout@v4
       with:
-        repository:  https://github.com/eumel8/expire-action
+        repository: eumel8/expire-action
         ref: dev
     - name: "Setup Python ${{ inputs.python_version }}"
       uses: actions/setup-python@v4
