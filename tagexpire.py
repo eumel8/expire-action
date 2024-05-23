@@ -31,6 +31,7 @@ if repo_type == 'user':
         if created_at < threshold_date:
             response = requests.delete(f'https://api.github.com/user/packages/container/{image_name}/versions/{tag["id"]}', auth=auth)
             response.raise_for_status()  # Raise an exception if the request failed
+            print(f'Deleted tag {tag["id"]}')
             print(f'Deleted tag {tag["name"]}')
 
 elif repo_type == 'org':
