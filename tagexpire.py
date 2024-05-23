@@ -30,6 +30,7 @@ if repo_type == 'user':
             print("The server encountered an internal error.")
         else:
             print(f"HTTP error occurred: {e}")
+            print(f"Response message: {response.text}")
     except requests.exceptions.RequestException as e:
         print(f"Request error: {e}")
     except Exception as e:
@@ -52,6 +53,7 @@ if repo_type == 'user':
                         print("The server encountered an internal error.")
                     else:
                         print(f"HTTP error occurred: {e}")
+                        print(f"Response message: {response.text}")
                 except requests.exceptions.RequestException as e:
                     print(f"Request error: {e}")
                 except Exception as e:
