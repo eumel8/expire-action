@@ -62,6 +62,7 @@ elif repo_type == 'org':
         # loop through the versions and check if the created_at is older than the threshold
         for i in range(1, version_count + 1):
             response = requests.get(f'https://api.github.com/orgs/{orgname}/packages/container/{image_name}/versions?per_page=1&page={i}', auth=auth)
+            print(i)
             tags = response.json()
             for tag in tags:
                 created_at = datetime.strptime(tag['created_at'], '%Y-%m-%dT%H:%M:%SZ')
