@@ -8,8 +8,8 @@ username = sys.argv[1]
 token = sys.argv[2]
 repo_type = sys.argv[3]
 image_name = sys.argv[4]
-days_threshold = sys.argv[5]
-orgname = sys.argv[6]
+days_threshold = sys.argv[5] if len(sys.argv) > 5
+orgname = sys.argv[6] if len(sys.argv) > 6
 
 # Basic auth using your username and PAT
 auth = (username, token)
