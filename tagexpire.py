@@ -1,0 +1,40 @@
+import requests
+from datetime import datetime, timedelta
+import json
+import sys
+
+# define command line arguments username, token, image_name, days_threshold, orgname
+username = sys.argv[1]
+token = sys.argv[2]
+repo_type = sys.argv[3]
+image_name = sys.argv[4]
+days_threshold = sys.argv[5]
+orgname = sys.argv[6]
+
+# Basic auth using your username and PAT
+auth = (username, token)
+
+# Get all tags
+if repo_type == 'user':
+    response = requests.get(f'https://api.github.com/user/packages/container/'+image_name+'/versions', auth=auth)
+
+elif repo_type == 'org':
+    response = requests.get(f'https://api.github.com/orgs/'+orgname+'/packages/container/'+image_name+'/versions', auth=auth)
+
+response.raise_for_status()  # Raise an exception if the request failed
+
+tags = response.json()
+
+# Calculate the date threshold
+threshold_date = datetime.now() - timedelta(days=days_threshold)
+
+for tag in tags:
+    # Parse the created_at date
+    created_at = datetime.strptime(tag['created_at'], '%Y-%m-%dT%H:%M:%SZ')
+
+    # If the tag is older than the threshold, delete it
+    if created_at < threshold_date:
+        # print out the tag name and created_at date
+        #response = requests.delete(f'https://api.github.com/user/packages/container/{image_name}/versions/{tag["id"]}', auth=auth)
+        #response.raise_for_status()  # Raise an exception if the request failed
+        print(f'Deleted tag {tag["name"]}')
