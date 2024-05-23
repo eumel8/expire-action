@@ -65,21 +65,21 @@ elif repo_type == 'org':
         for i in range(1, version_count + 1):
             response = requests.get(f'https://api.github.com/orgs/{orgname}/packages/container/{image_name}/versions?per_page=1&page={i}', auth=auth)
             tags = response.json()
-            for tag in tags:
-                created_at = datetime.strptime(tag['created_at'], '%Y-%m-%dT%H:%M:%SZ')
-                if created_at < threshold_date:
-                    print(f'Delete tag {tag["id"]} - {tag["name"]}')
-                    try:
-                        response = requests.delete(f'https://api.github.com/orgs/{orgname}/packages/container/{image_name}/versions/{tag["id"]}', auth=auth)
-                        response.raise_for_status()
-                    except HTTPError as e:
-                        if response.status_code == 404:
-                            print("The requested resource was not found.")
-                        elif response.status_code == 500:
-                            print("The server encountered an internal error.")
-                        else:
-                            print(f"HTTP error occurred: {e}")
-                            print(f"Response message: {response.text}")
+            tag = tags[0]
+            created_at = datetime.strptime(tag['created_at'], '%Y-%m-%dT%H:%M:%SZ')
+            if created_at < threshold_date:
+                print(f'Delete tag {tag["id"]} - {tag["name"]}')
+                try:
+                    response = requests.delete(f'https://api.github.com/orgs/{orgname}/packages/container/{image_name}/versions/{tag["id"]}', auth=auth)
+                    response.raise_for_status()
+                except HTTPError as e:
+                    if response.status_code == 404:
+                        print("The requested resource was not found.")
+                    elif response.status_code == 500:
+                        print("The server encountered an internal error.")
+                    else:
+                        print(f"HTTP error occurred: {e}")
+                        print(f"Response message: {response.text}")
 
     except HTTPError as e:
         if response.status_code == 404:
