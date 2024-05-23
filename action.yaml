@@ -46,14 +46,12 @@ runs:
       run: python --version
       shell: bash
 
-    - name: "Install Python Dependencies"
+    - name: "Install Python Venv"
       run: |
-        python -m pip install --upgrade pip
-        python -m pip install json
-        python -m pip install requests
-        python -m pip install sys
+        python -m venv venv
+        ./venv/bin/pip install json requests sys
       shell: bash
        
     - name: "Run tagexpire"
-      run: "python tagexpire.py ${{ inputs.username }} ${{ inputs.token }} ${{ inputs.repo_type }} ${{ inputs.image_name }} ${{ inputs.days_treshold }} ${{ inputs.orgname }}" 
+      run: "./venv/bin/python tagexpire.py ${{ inputs.username }} ${{ inputs.token }} ${{ inputs.repo_type }} ${{ inputs.image_name }} ${{ inputs.days_treshold }} ${{ inputs.orgname }}" 
       shell: bash
