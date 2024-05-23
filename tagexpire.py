@@ -22,6 +22,7 @@ threshold_date = datetime.now() - timedelta(days=days_threshold)
 if repo_type == 'user':
     try:
         response = requests.get(f'https://api.github.com/user/packages/container/{image_name}', auth=auth)
+        response.raise_for_status()
         versions = response.json()
         version_count = int(versions['version_count'])
         print("version count ", version_count)
@@ -56,6 +57,7 @@ if repo_type == 'user':
 elif repo_type == 'org':
     try:
         response = requests.get(f'https://api.github.com/orgs/{orgname}/packages/container/{image_name}', auth=auth)
+        response.raise_for_status()
         versions = response.json()
         version_count = int(versions['version_count'])
         print("version count ",version_count)
