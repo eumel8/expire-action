@@ -1,4 +1,5 @@
 import requests
+from requests.exceptions import HTTPError
 from datetime import datetime, timedelta
 import json
 import sys
