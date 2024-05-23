@@ -24,8 +24,10 @@ if repo_type == 'user':
         response = requests.get(f'https://api.github.com/user/packages/container/{image_name}', auth=auth)
         versions = response.json()
         version_count = int(versions['version_count'])
+        print(version_count)
         # loop through the versions and check if the created_at is older than the threshold
         for i in range(1, version_count + 1):
+            print(i)
             response = requests.get(f'https://api.github.com/user/packages/container/{image_name}/versions?per_page=1&page={i}', auth=auth)
             tags = response.json()
             for tag in tags:
