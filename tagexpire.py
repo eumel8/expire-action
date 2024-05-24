@@ -40,6 +40,7 @@ if repo_type == 'user':
                 if created_at < threshold_date:
                     # Check tags in metadata.container.tags
                     tag_protected = any(protected_tags_pattern.match(t) for t in tag['metadata']['container']['tags'])
+                    print("protected tags: ", tag_protected)
                     if not tag_protected:
                         print(f'Delete tag {tag["id"]} - {tag["name"]}')
                         try:
