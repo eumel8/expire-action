@@ -39,7 +39,7 @@ runs:
     - uses: actions/checkout@v4
       with:
         repository: eumel8/expire-action
-        ref: dev
+        ref: 1.0.2
     - name: "Setup Python ${{ inputs.python_version }}"
       uses: actions/setup-python@v4
       with:
