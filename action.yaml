@@ -9,10 +9,6 @@ inputs:
     required: false
     type: string
     default: "3.x"
-  username:
-    required: true
-    type: string
-    default: ""
   token:
     required: true
     type: string
@@ -56,5 +52,5 @@ runs:
       shell: bash
        
     - name: "Run tagexpire"
-      run: "./venv/bin/python tagexpire.py ${{ inputs.username }} ${{ inputs.token }} ${{ inputs.repo_type }} ${{ inputs.image_name }} ${{ inputs.days_treshold }} ${{ inputs.orgname }}" 
+      run: "./venv/bin/python tagexpire.py ${{ inputs.token }} ${{ inputs.repo_type }} ${{ inputs.image_name }} ${{ inputs.days_treshold }} ${{ inputs.orgname }}" 
       shell: bash

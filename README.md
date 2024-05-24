@@ -22,7 +22,6 @@ jobs:
     steps:
       - uses: eumel8/expire-action@dev
         with:
-          username: ${{secrets.username}}
           token: ${{secrets.token}}
           repo_type: user
           image_name: myimage
@@ -45,7 +44,6 @@ jobs:
     steps:
       - uses: eumel8/expire-action@dev
         with:
-          username: ${{secrets.username}}
           token: ${{secrets.token}}
           repo_type: org
           orgname: my-org
@@ -57,7 +55,6 @@ inputs:
 
 | Parameter      | Description                                             |
 |----------------|---------------------------------------------------------|
-| `username`     | The GitHub username.                                    |
 | `token`        | The Personal Access Token with the required scopes.     |
 | `repo_type`    | The type of repository (`user` or `org`).               |
 | `orgname`      | The name of the organization (only for `org` repo_type).|
