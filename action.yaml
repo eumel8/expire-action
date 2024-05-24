@@ -25,7 +25,7 @@ inputs:
     required: false
     type: int
     default: 30
-  protected_tags:
+  protected_tags_regex:
     required: false
     type: string
     default: ""
@@ -56,5 +56,5 @@ runs:
       shell: bash
        
     - name: "Run tagexpire"
-      run: "./venv/bin/python tagexpire.py ${{ inputs.token }} ${{ inputs.repo_type }} ${{ inputs.image_name }} ${{ inputs.days_treshold }} ${{ inputs.protected_tags }} ${{ inputs.orgname }}" 
+      run: "./venv/bin/python tagexpire.py ${{ inputs.token }} ${{ inputs.repo_type }} ${{ inputs.image_name }} ${{ inputs.days_treshold }} ${{ inputs.protected_tags_regex }} ${{ inputs.orgname }}" 
       shell: bash

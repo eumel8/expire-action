@@ -4,13 +4,14 @@ from datetime import datetime, timedelta
 import json
 import math
 import sys
+import re
 
-# Define command line arguments: username, token, repo_type, image_name, days_threshold, protected_tags, orgname
+# Define command line arguments: username, token, repo_type, image_name, days_threshold, protected_tags_regex, orgname
 token = sys.argv[1]
 repo_type = sys.argv[2]
 image_name = sys.argv[3]
 days_threshold = int(sys.argv[4])
-protected_tags = sys.argv[5].split(',') if len(sys.argv) > 5 else []
+protected_tags_regex = sys.argv[5] if len(sys.argv) > 5 else ''
 orgname = sys.argv[6] if len(sys.argv) > 6 else None
 
 # Token for authentication
@@ -18,6 +19,9 @@ authheader = {'Authorization': 'Bearer ' + token}
 
 # Calculate the date threshold
 threshold_date = datetime.now() - timedelta(days=days_threshold)
+
+# Compile the regex pattern
+protected_tags_pattern = re.compile(protected_tags_regex)
 
 # Get all tags based on repo_type and operate deletion
 if repo_type == 'user':
@@ -33,19 +37,22 @@ if repo_type == 'user':
             tags = response.json()
             for tag in tags:
                 created_at = datetime.strptime(tag['created_at'], '%Y-%m-%dT%H:%M:%SZ')
-                if created_at < threshold_date and tag['name'] not in protected_tags:
-                    print(f'Delete tag {tag["id"]} - {tag["name"]}')
-                    try:
-                        response = requests.delete(f'https://api.github.com/user/packages/container/{image_name}/versions/{tag["id"]}', headers=authheader)
-                        response.raise_for_status()
-                    except HTTPError as e:
-                        if response.status_code == 404:
-                            print("The requested resource was not found.")
-                        elif response.status_code == 500:
-                            print("The server encountered an internal error.")
-                        else:
-                            print(f"HTTP error occurred: {e}")
-                            print(f"Response message: {response.text}")
+                if created_at < threshold_date:
+                    # Check tags in metadata.container.tags
+                    tag_protected = any(protected_tags_pattern.match(t) for t in tag['metadata']['container']['tags'])
+                    if not tag_protected:
+                        print(f'Delete tag {tag["id"]} - {tag["name"]}')
+                        try:
+                            response = requests.delete(f'https://api.github.com/user/packages/container/{image_name}/versions/{tag["id"]}', headers=authheader)
+                            response.raise_for_status()
+                        except HTTPError as e:
+                            if response.status_code == 404:
+                                print("The requested resource was not found.")
+                            elif response.status_code == 500:
+                                print("The server encountered an internal error.")
+                            else:
+                                print(f"HTTP error occurred: {e}")
+                                print(f"Response message: {response.text}")
     except HTTPError as e:
         if response.status_code == 404:
             print("The requested resource was not found.")
@@ -68,20 +75,22 @@ elif repo_type == 'org':
             tags = response.json()
             for tag in tags:
                 created_at = datetime.strptime(tag['created_at'], '%Y-%m-%dT%H:%M:%SZ')
-                if created_at < threshold_date and tag['name'] not in protected_tags:
-                    print(f'Delete tag {tag["id"]} - {tag["name"]}')
-                    try:
-                        response = requests.delete(f'https://api.github.com/orgs/{orgname}/packages/container/{image_name}/versions/{tag["id"]}', headers=authheader)
-                        response.raise_for_status()
-                    except HTTPError as e:
-                        if response.status_code == 404:
-                            print("The requested resource was not found.")
-                        elif response.status_code == 500:
-                            print("The server encountered an internal error.")
-                        else:
-                            print(f"HTTP error occurred: {e}")
-                            print(f"Response message: {response.text}")
-
+                if created_at < threshold_date:
+                    # Check tags in metadata.container.tags
+                    tag_protected = any(protected_tags_pattern.match(t) for t in tag['metadata']['container']['tags'])
+                    if not tag_protected:
+                        print(f'Delete tag {tag["id"]} - {tag["name"]}')
+                        try:
+                            response = requests.delete(f'https://api.github.com/orgs/{orgname}/packages/container/{image_name}/versions/{tag["id"]}', headers=authheader)
+                            response.raise_for_status()
+                        except HTTPError as e:
+                            if response.status_code == 404:
+                                print("The requested resource was not found.")
+                            elif response.status_code == 500:
+                                print("The server encountered an internal error.")
+                            else:
+                                print(f"HTTP error occurred: {e}")
+                                print(f"Response message: {response.text}")
     except HTTPError as e:
         if response.status_code == 404:
             print("The requested resource was not found.")
