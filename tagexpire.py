@@ -14,7 +14,8 @@ days_threshold = int(sys.argv[5])
 orgname = sys.argv[6] if len(sys.argv) > 6 else None
 
 # Basic auth using your username and PAT
-auth = (username, token)
+#auth = (username, token)
+authheader = {'Authorization': 'Bearer ' + token}
 
 # Calculate the date threshold
 threshold_date = datetime.now() - timedelta(days=days_threshold)
@@ -22,21 +23,21 @@ threshold_date = datetime.now() - timedelta(days=days_threshold)
 # Get all tags based on repo_type and operate deletion
 if repo_type == 'user':
     try:
-        response = requests.get(f'https://api.github.com/user/packages/container/{image_name}', auth=auth)
+        response = requests.get(f'https://api.github.com/user/packages/container/{image_name}', headers=authheader)
         response.raise_for_status()
         versions = response.json()
         version_count = math.ceil(int(versions['version_count'])//100 + 1)
         print("version count ", version_count)
         # loop through the versions and check if the created_at is older than the threshold
         for i in range(1, version_count + 1):
-            response = requests.get(f'https://api.github.com/user/packages/container/{image_name}/versions?per_page=100&page={i}', auth=auth)
+            response = requests.get(f'https://api.github.com/user/packages/container/{image_name}/versions?per_page=100&page={i}', headers=authheader)
             tags = response.json()
             for tag in tags:
                 created_at = datetime.strptime(tag['created_at'], '%Y-%m-%dT%H:%M:%SZ')
                 if created_at < threshold_date:
                     print(f'Delete tag {tag["id"]} - {tag["name"]}')
                     try:
-                        response = requests.delete(f'https://api.github.com/user/packages/container/{image_name}/versions/{tag["id"]}', auth=auth)
+                        response = requests.delete(f'https://api.github.com/user/packages/container/{image_name}/versions/{tag["id"]}', headers=authheader)
                         response.raise_for_status()
                     except HTTPError as e:
                         if response.status_code == 404:
@@ -57,21 +58,21 @@ if repo_type == 'user':
 
 elif repo_type == 'org':
     try:
-        response = requests.get(f'https://api.github.com/orgs/{orgname}/packages/container/{image_name}', auth=auth)
+        response = requests.get(f'https://api.github.com/orgs/{orgname}/packages/container/{image_name}', headers=authheader)
         response.raise_for_status()
         versions = response.json()
         version_count = math.ceil(int(versions['version_count'])//100 + 1)
         print("version count ",version_count)
         # loop through the versions and check if the created_at is older than the threshold
         for i in range(1, version_count + 1):
-            response = requests.get(f'https://api.github.com/orgs/{orgname}/packages/container/{image_name}/versions?per_page=100&page={i}', auth=auth)
+            response = requests.get(f'https://api.github.com/orgs/{orgname}/packages/container/{image_name}/versions?per_page=100&page={i}', headers=authheader)
             tags = response.json()
             for tag in tags:
                 created_at = datetime.strptime(tag['created_at'], '%Y-%m-%dT%H:%M:%SZ')
                 if created_at < threshold_date:
                     print(f'Delete tag {tag["id"]} - {tag["name"]}')
                     try:
-                        response = requests.delete(f'https://api.github.com/orgs/{orgname}/packages/container/{image_name}/versions/{tag["id"]}', auth=auth)
+                        response = requests.delete(f'https://api.github.com/orgs/{orgname}/packages/container/{image_name}/versions/{tag["id"]}', headers=authheader)
                         response.raise_for_status()
                     except HTTPError as e:
                         if response.status_code == 404:
