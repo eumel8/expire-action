@@ -5,12 +5,13 @@ import json
 import math
 import sys
 
-# define command line arguments username, token, image_name, days_threshold, orgname
+# Define command line arguments: username, token, repo_type, image_name, days_threshold, protected_tags, orgname
 token = sys.argv[1]
 repo_type = sys.argv[2]
 image_name = sys.argv[3]
 days_threshold = int(sys.argv[4])
-orgname = sys.argv[5] if len(sys.argv) > 5 else None
+protected_tags = sys.argv[5].split(',') if len(sys.argv) > 5 else []
+orgname = sys.argv[6] if len(sys.argv) > 6 else None
 
 # Token for authentication
 authheader = {'Authorization': 'Bearer ' + token}
@@ -32,7 +33,7 @@ if repo_type == 'user':
             tags = response.json()
             for tag in tags:
                 created_at = datetime.strptime(tag['created_at'], '%Y-%m-%dT%H:%M:%SZ')
-                if created_at < threshold_date:
+                if created_at < threshold_date and tag['name'] not in protected_tags:
                     print(f'Delete tag {tag["id"]} - {tag["name"]}')
                     try:
                         response = requests.delete(f'https://api.github.com/user/packages/container/{image_name}/versions/{tag["id"]}', headers=authheader)
@@ -67,7 +68,7 @@ elif repo_type == 'org':
             tags = response.json()
             for tag in tags:
                 created_at = datetime.strptime(tag['created_at'], '%Y-%m-%dT%H:%M:%SZ')
-                if created_at < threshold_date:
+                if created_at < threshold_date and tag['name'] not in protected_tags:
                     print(f'Delete tag {tag["id"]} - {tag["name"]}')
                     try:
                         response = requests.delete(f'https://api.github.com/orgs/{orgname}/packages/container/{image_name}/versions/{tag["id"]}', headers=authheader)
