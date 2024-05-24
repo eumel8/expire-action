@@ -2,7 +2,7 @@
 
 Expire (delete) tags from container registry ghcr.io on a specific timeset (30 days)
 
-hint: requires a github username and a Personal access token with skope: delete:packages, repo, write:packages
+hint: requires a Personal access token with skope: delete:packages, repo, write:packages
 
 usage:
 
@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "expire-tags"
     steps:
-      - uses: eumel8/expire-action@dev
+      - uses: eumel8/expire-action@1.0.0
         with:
           token: ${{secrets.token}}
           repo_type: user
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "expire-tags"
     steps:
-      - uses: eumel8/expire-action@dev
+      - uses: eumel8/expire-action@1.0.0
         with:
           token: ${{secrets.token}}
           repo_type: org
