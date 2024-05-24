@@ -2,13 +2,13 @@
 
 Expire (delete) tags from container registry ghcr.io on a specific timeset (30 days)
 
-hint: requires a Personal access token with skope: delete:packages, repo, write:packages
+hint: requires a Personal access token with scope: delete:packages, repo, write:packages
 
-usage:
+## Usage
 
-for user:
+### For user:
 
-```
+```yaml
 on:
   schedule:
     - cron: "10 6 * * *"
@@ -26,11 +26,12 @@ jobs:
           repo_type: user
           image_name: myimage
           days_treshold: 100
+          protected_tags: latest,dev
 ```
 
-for org:
+### For org:
 
-```
+```yaml
 on:
   schedule:
     - cron: "10 6 * * *"
@@ -49,14 +50,16 @@ jobs:
           orgname: my-org
           image_name: myapp%2Fmyimage
           days_treshold: 100
+          protected_tags: latest,dev
 ```
 
-inputs:
+## Inputs
 
-| Parameter      | Description                                             |
-|----------------|---------------------------------------------------------|
-| `token`        | The Personal Access Token with the required scopes.     |
-| `repo_type`    | The type of repository (`user` or `org`).               |
-| `orgname`      | The name of the organization (only for `org` repo_type).|
-| `image_name`   | The name of the container image.                        |
-| `days_treshold`| The number of days after which tags will be expired.    |
+| Parameter       | Description                                             |
+|-----------------|---------------------------------------------------------|
+| `token`         | The Personal Access Token with the required scopes.     |
+| `repo_type`     | The type of repository (`user` or `org`).               |
+| `orgname`       | The name of the organization (only for `org` repo_type).|
+| `image_name`    | The name of the container image.                        |
+| `days_treshold` | The number of days after which tags will be expired.    |
+| `protected_tags`| Comma-separated list of tags that should not be deleted.|
