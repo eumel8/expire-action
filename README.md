@@ -26,7 +26,7 @@ jobs:
           repo_type: user
           image_name: myimage
           days_treshold: 100
-          protected_tags_regex: "^latest$|^dev$"
+          protected_tags_regex: "^dev$\\|^latest$\\|^2.0.0$" # protect dev, latest, 2.0.0
 ```
 
 ### For org:
@@ -50,7 +50,7 @@ jobs:
           orgname: my-org
           image_name: myapp%2Fmyimage
           days_treshold: 100
-          protected_tags_regex: "^latest$|^dev$"
+          protected_tags_regex: "[23].*" # protect 2.0.0, 3.0.0
 ```
 
 ## Inputs
