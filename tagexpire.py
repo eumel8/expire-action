@@ -67,7 +67,6 @@ elif repo_type == 'org':
             response = requests.get(f'https://api.github.com/orgs/{orgname}/packages/container/{image_name}/versions?per_page=100&page={i}', auth=auth)
             tags = response.json()
             for tag in tags:
-                print(tag["id"])
                 created_at = datetime.strptime(tag['created_at'], '%Y-%m-%dT%H:%M:%SZ')
                 if created_at < threshold_date:
                     print(f'Delete tag {tag["id"]} - {tag["name"]}')
