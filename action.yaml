@@ -1,0 +1,56 @@
+name: expire-action
+description: Expire (delete) tags from your container registry
+branding:
+  icon: 'check-circle'
+  color: 'green'
+inputs:
+  python_version:
+    description: "version of python to run action with"
+    required: false
+    type: string
+    default: "3.x"
+  token:
+    required: true
+    type: string
+    default: ""
+  repo_type:
+    required: false
+    type: string
+    default: "user"
+  image_name:
+    required: true
+    type: string
+    default: ""
+  days_treshold:
+    required: false
+    type: int
+    default: 30
+  orgname:
+    required: false
+    type: string
+    default: ""
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: eumel8/expire-action
+        ref: dev
+    - name: "Setup Python ${{ inputs.python_version }}"
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python_version }}
+    
+    - name: "Show Python Version"
+      run: python --version
+      shell: bash
+
+    - name: "Install Python Venv"
+      run: |
+        python -m venv venv
+        ./venv/bin/pip install requests
+      shell: bash
+       
+    - name: "Run tagexpire"
+      run: "./venv/bin/python tagexpire.py ${{ inputs.token }} ${{ inputs.repo_type }} ${{ inputs.image_name }} ${{ inputs.days_treshold }} ${{ inputs.orgname }}" 
+      shell: bash
